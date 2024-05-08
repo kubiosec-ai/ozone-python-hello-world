@@ -1,6 +1,5 @@
 from flask import Flask, Response
 import json
-import random
 import newrelic.agent
 
 app = Flask(__name__)
@@ -11,21 +10,12 @@ newrelic.agent.initialize("newrelic.ini")
 @newrelic.agent.wsgi_application()
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    n = random.random()
-    if n > 0.95:
-        raise Exception("unknown exception occured")
-        newrelic.agent.notice_error()
-        return Response(
-            response=json.dumps({'error': "unknown exception happened"}),
-            mimetype='application/json',
-            status=500
-        )
-    else:
-        print("success")
-        return Response(
-            response=json.dumps({'value': 11}),
-            mimetype='application/json'
-        )
+    # Simulating an unhandled exception occurring with every request
+    raise Exception("Unhandled exception occurred")
+    return Response(
+        response=json.dumps({'value': 11}),
+        mimetype='application/json'
+    )
 
 
 @newrelic.agent.wsgi_application()
